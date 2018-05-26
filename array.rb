@@ -1,5 +1,6 @@
+# class Array
 class Array
-  def add b
-    self.zip(b).map {|l| l.reduce(:+)}
+  def add(element)
+    zip(element).map { |l| l.reduce(:+) }
   end
 end
