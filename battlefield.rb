@@ -1,79 +1,93 @@
 require './field.rb'
 
+# class Battlefield
 class BattleField < Field
   def initialize
     super
-    newships
+    new_ships
   end
 
   SHIPS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1].freeze
 
-  def newships
-    @allships = SHIPS.map { |len| Ship.new(self, len)}
+  # Initializes ships array
+  def new_ships
+    @all_ships = SHIPS.map { |len| Ship.new(self, len) }
   end
 
-  # Задание 18 fleet
+  # Returns information about all ships on the battlefield
   def fleet
-    @allships.each_with_index.map {|x, i| [i, x.len]}
+    @all_ships.each_with_index.map { |x, i| [i, x.len] }
   end
 
-  # Задание 19 place_fleet pos_list
-  def place_fleet pos_list
+  # Places ships on the field by given position array
+  def place_fleet(pos_list)
+    # Try to set all ships on the field
     res = pos_list.inject(true) do |a, l|
-      a && @allships[l[0]].set!(l[1], l[2], l[3])
+      a && @all_ships[l[0]].set!(l[1], l[2], l[3])
     end
-    if res
-      res = @allships.inject(true) {|a, ship| a && ship.coord}
-    end
-    if !res
-      @allships.each {|ship| if ship.coord then ship.kill end}
-    end
+
+    # If success, check something???
+    res = @all_ships.inject(true) { |a, ship| a && ship.coord } if res
+
+    # Remove all ships otherwise
+    @all_ships.each { |ship| ship.kill if ship.coord } if !res
+
     res
   end
 
-  # Задание 20 remains
+  # Returns current state of the fleet
   def remains
-    @allships.each_with_index.map {|x, i| [i, x.coord, x.len, x.health]}
+    @all_ships.each_with_index.map { |x, i| [i, x.coord, x.len, x.health] }
   end
 
-  # Задание 21 refresh
+  # Refresh ships list, removing killed ships
   def refresh
-    @allships = @field.reduce(:|).find_all {|x| x}
+    @all_ships = @field.reduce(:|).find_all { |x| x }
   end
 
-  # Задание 22 shoot c
-  def shoot c
-    x = c[0]; y = c[1]
+  # Lands a shot at current battlefield
+  def shoot(coords)
+    x = coords[0]
+    y = coords[1]
+
+    # Check that there is a ship at [x, y]
     if @field[x][y]
-      if res = @field[x][y].explode
+      # Check that ship is killed
+      if (res = @field[x][y].explode)
         refresh
         "killed #{res}"
       else
-        "wounded"
+        'wounded'
       end
     else
-      "miss"
+      'miss'
     end
   end
 
-  # Задание 23 cure
+  # Heals all wounded ships
   def cure
-    @allships.each {|ship| ship.cure}
+    @all_ships.each(&:cure)
   end
 
-  # Задание 24 game_over?
+  # Checks that there is no more ships on the battlefield
   def game_over?
-    @allships.empty?
+    @all_ships.empty?
   end
 
-  # Задание 25 move l_move
-  def move l_move
-    is_rot = l_move[1].between?(1,3)
-    direction = l_move[2] == 1
+  # Makes a move
+  # @param [Array] move_params - [i, move_t, dir]
+  # i - number of the ship
+  # move_t - type of the move (move, rotate)
+  # dir - move param
+  def move(move_params)
+    # Check for rotation
+    is_rot = move_params[1].between?(1, 3)
+    # Set direction
+    direction = move_params[2] == 1
     if is_rot
-      @allships[l_move[0]].rotate(l_move[2], l_move[1])
+      @all_ships[move_params[0]].rotate(move_params[2], move_params[1])
     else
-      @allships[l_move[0]].move direction
+      @all_ships[move_params[0]].move direction
     end
   end
 end
