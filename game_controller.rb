@@ -9,7 +9,7 @@ srand
 
 p1 = Player.new('Ivan', true)
 p2 = Player.new('Feodor')
-g = Game.new(p1,p2)
+g = Game.new(p1, p2)
 g.start
 
 class Integer

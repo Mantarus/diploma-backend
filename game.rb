@@ -8,6 +8,7 @@ class Game
     @players.each { |p| reset p }
     @players.shuffle!
     @game_over = false
+    @log = ''
   end
 
   def reset(player_arr)
@@ -32,12 +33,17 @@ class Game
       # Increase turn counter
       p1[2] += 1
       print("Step #{p1[2]} of player ", p1[0].name, "\n")
+      log("\n#{p1[0].name}\tstep #{p1[2]}")
 
       # Cure all current player's ships
       p1[1].cure
+      p1[1].remains.each do |ship|
+        log("#{p1[0].name}\t#{ship[0]}\t#{ship[3]}")
+      end
 
       # Player moves or rotates one of his ships and then shoots
-      p1[1].move(p1[0].ship_move_strategy(p1[1].remains))
+      move = p1[0].ship_move_strategy(p1[1].remains)
+      move_res = p1[1].move(move)
       # p2[1].print_field
       shot = p1[0].shot_strategy
 
@@ -51,6 +57,8 @@ class Game
       end
 
       print(shot, ' ', res, "\n")
+      log("#{p1[0].name}\t#{move}") if move_res
+      log("#{p1[0].name}\t#{shot}\t#{res}")
 
       # Check hit. If miss, pass to the opponent, else check game over condition
       if res == 'miss'
@@ -67,4 +75,11 @@ class Game
       end
     end
   end
+
+  private
+
+  def log(string)
+    @log += string + "\n"
+  end
+
 end
