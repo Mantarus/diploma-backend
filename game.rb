@@ -11,17 +11,6 @@ class Game
     @log = ''
   end
 
-  def reset(player_arr)
-    print(player_arr[0].name, " game setup\n")
-    player_arr[0].reset
-    player_ships = player_arr[1].fleet
-    if !player_arr[1].place_fleet(player_arr[0].place_strategy(player_ships))
-      raise 'Illegal ship placement'
-    else
-      puts 'Ships placed'
-    end
-  end
-
   def start
     last_shots = []
     until @game_over
@@ -57,8 +46,10 @@ class Game
       end
 
       print(shot, ' ', res, "\n")
-      log("#{p1[0].name}\t#{move}") if move_res
-      log("#{p1[0].name}\t#{shot}\t#{res}")
+      if move_res
+        log("#{p1[0].name}\t#{move}")
+        log("#{p1[0].name}\t#{shot}\t#{res}")
+      end
 
       # Check hit. If miss, pass to the opponent, else check game over condition
       if res == 'miss'
@@ -76,7 +67,22 @@ class Game
     end
   end
 
+  def read_game_log
+    @log
+  end
+
   private
+
+  def reset(player_arr)
+    print(player_arr[0].name, " game setup\n")
+    player_arr[0].reset
+    player_ships = player_arr[1].fleet
+    if !player_arr[1].place_fleet(player_arr[0].place_strategy(player_ships))
+      raise 'Illegal ship placement'
+    else
+      puts 'Ships placed'
+    end
+  end
 
   def log(string)
     @log += string + "\n"
