@@ -13,6 +13,11 @@ def add_module_definition(class_definition, module_name)
   "module #{module_name}\n#{class_definition}\nend"
 end
 
+def handle_syntax_error(syntax_error, file)
+  FileUtils.remove file
+  puts syntax_error.message
+end
+
 default_player_str = File.read('test_strategies/default.txt')
 custom_player_str = File.read('test_strategies/cannot_compile.txt')
 
@@ -30,11 +35,17 @@ open(file_b, 'w') { |f| f.puts module_b }
 
 begin
 load file_a
-load file_b
 rescue SyntaxError => error
-  puts error.message
-  FileUtils.remove file_a
+  handle_syntax_error(error, file_a)
   FileUtils.remove file_b
+  return
+end
+
+begin
+  load file_b
+rescue SyntaxError => error
+  handle_syntax_error(error, file_b)
+  FileUtils.remove file_a
   return
 end
 
