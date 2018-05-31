@@ -1,13 +1,20 @@
 require './game_controller.rb'
 require 'FileUtils'
+require 'timeout'
 
 # default_player_str = File.read('test_strategies/default.txt')
 # custom_player_str = File.read('test_strategies/cannot_compile.txt')
 
 default_player_str = File.read('test_strategies/default.txt')
-custom_player_str = File.read('test_strategies/default.txt')
+custom_player_str = File.read('test_strategies/timed_out.txt')
 
 controller = GameController.new(default_player_str, custom_player_str)
 
-game_result = controller.play_game
-puts game_result
+begin
+  game_result = Timeout::timeout(2) do
+    game_result = controller.play_game
+  end
+  puts game_result
+rescue Timeout::Error
+  puts 'Calculation timed out'
+end
