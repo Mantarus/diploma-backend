@@ -4,9 +4,6 @@ require './game_controller.rb'
 require 'FileUtils'
 require 'timeout'
 
-# default_player_str = File.read('test_strategies/default.txt')
-# custom_player_str = File.read('test_strategies/cannot_compile.txt')
-
 default_player_str = File.read('test_strategies/default.txt')
 custom_player_str = File.read('test_strategies/default.txt')
 
