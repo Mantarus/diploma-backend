@@ -3,6 +3,8 @@ require './battlefield.rb'
 require './field.rb'
 require './game.rb'
 require './ship.rb'
+require './response.rb'
+
 require 'FileUtils'
 
 class GameController
@@ -26,17 +28,17 @@ class GameController
     begin
     load file_a
     rescue SyntaxError => error
-      handle_syntax_error(error, file_a)
+      message = handle_syntax_error(error, file_a)
       FileUtils.remove file_b
-      return
+      return Response.new(false, nil, message)
     end
 
     begin
       load file_b
     rescue SyntaxError => error
-      handle_syntax_error(error, file_b)
+      message = handle_syntax_error(error, file_b)
       FileUtils.remove file_a
-      return
+      return Response.new(false, nil, message)
     end
 
     FileUtils.remove file_a
@@ -49,9 +51,9 @@ class GameController
       p2 = ModuleB::Player.new('Player 2')
       g = Game.new(p1, p2)
       g.start
-      g.read_game_log
+      Response.new(true, g.read_game_log, nil)
     rescue => error
-      puts error.message
+      return Response.new(false, nil, error.message)
     end
 
   end
@@ -68,7 +70,7 @@ class GameController
 
   def handle_syntax_error(syntax_error, file)
     FileUtils.remove file
-    puts syntax_error.message
+    syntax_error.message
   end
 
 end
