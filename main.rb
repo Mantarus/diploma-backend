@@ -6,7 +6,7 @@ require 'timeout'
 # custom_player_str = File.read('test_strategies/cannot_compile.txt')
 
 default_player_str = File.read('test_strategies/default.txt')
-custom_player_str = File.read('test_strategies/timed_out.txt')
+custom_player_str = File.read('test_strategies/default.txt')
 
 controller = GameController.new(default_player_str, custom_player_str)
 

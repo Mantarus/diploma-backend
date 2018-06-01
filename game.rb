@@ -21,7 +21,7 @@ class Game
 
       # Increase turn counter
       p1[2] += 1
-      print("Step #{p1[2]} of player ", p1[0].name, "\n")
+      # print("Step #{p1[2]} of player ", p1[0].name, "\n")
       log("\n#{p1[0].name}\tstep #{p1[2]}")
 
       # Cure all current player's ships
@@ -38,14 +38,14 @@ class Game
 
       # Check for illegal shot and, if legal, make a shot
       if last_shots.include? shot
-        puts 'Illegal shot'
+        # puts 'Illegal shot'
         res = 'miss'
       else
         last_shots.push shot
         res = p2[1].shoot shot
       end
 
-      print(shot, ' ', res, "\n")
+      # print(shot, ' ', res, "\n")
       if move_res
         log("#{p1[0].name}\t#{move}")
         log("#{p1[0].name}\t#{shot}\t#{res}")
@@ -60,7 +60,7 @@ class Game
         p1[0].hit res
         @game_over = p2[1].game_over?
         if @game_over
-          puts "Player #{p1[0].name} wins!"
+          # puts "Player #{p1[0].name} wins!"
           break
         end
       end
@@ -74,13 +74,13 @@ class Game
   private
 
   def reset(player_arr)
-    print(player_arr[0].name, " game setup\n")
+    # print(player_arr[0].name, " game setup\n")
     player_arr[0].reset
     player_ships = player_arr[1].fleet
     if !player_arr[1].place_fleet(player_arr[0].place_strategy(player_ships))
       raise 'Illegal ship placement'
     else
-      puts 'Ships placed'
+      # puts 'Ships placed'
     end
   end
 
