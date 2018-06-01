@@ -1,4 +1,6 @@
+require './response.rb'
 require './game_controller.rb'
+
 require 'FileUtils'
 require 'timeout'
 
@@ -14,7 +16,7 @@ begin
   game_result = Timeout::timeout(2) do
     game_result = controller.play_game
   end
-  puts game_result
 rescue Timeout::Error
-  puts 'Calculation timed out'
+  game_result = Response.new(false, nil, 'Timed out!')
 end
+puts game_result
