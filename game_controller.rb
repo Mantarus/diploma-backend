@@ -30,7 +30,7 @@ class GameController
     rescue SyntaxError => error
       message = handle_syntax_error(error, file_a)
       FileUtils.remove file_b
-      return Response.new(false, nil, message)
+      return Response.new(false, nil, nil, message)
     end
 
     begin
@@ -38,7 +38,7 @@ class GameController
     rescue SyntaxError => error
       message = handle_syntax_error(error, file_b)
       FileUtils.remove file_a
-      return Response.new(false, nil, message)
+      return Response.new(false, nil, nil, message)
     end
 
     FileUtils.remove file_a
@@ -50,10 +50,10 @@ class GameController
       p1 = ModuleA::Player.new('Player 1')
       p2 = ModuleB::Player.new('Player 2')
       g = Game.new(p1, p2)
-      g.start
-      Response.new(true, g.read_game_log, nil)
+      result = g.start
+      Response.new(true, result.winner, result.game_log, nil)
     rescue => error
-      return Response.new(false, nil, error.message)
+      return Response.new(false, nil, nil, error.message)
     end
 
   end

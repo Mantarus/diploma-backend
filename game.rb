@@ -12,7 +12,9 @@ class Game
   end
 
   def start
+    game_result = GameResult.new(nil, nil)
     last_shots = []
+
     until @game_over
 
       # Init players
@@ -60,11 +62,14 @@ class Game
         p1[0].hit res
         @game_over = p2[1].game_over?
         if @game_over
-          # puts "Player #{p1[0].name} wins!"
+          game_result.winner = p1[0].name
+          game_result.game_log = @log
           break
         end
       end
     end
+
+    game_result
   end
 
   def read_game_log
@@ -88,4 +93,14 @@ class Game
     @log += string + "\n"
   end
 
+end
+
+# class GameResult
+class GameResult
+  attr_accessor :winner, :game_log
+
+  def initialize(winner, game_log)
+    @winner = winner
+    @game_log = game_log
+  end
 end

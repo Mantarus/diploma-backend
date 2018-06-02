@@ -1,13 +1,17 @@
 class Response
-  attr_accessor :success, :game_log, :game_error
+  attr_accessor :success, :winner, :game_log, :game_error
 
-  def initialize(success, game_log, game_error)
+  def initialize(success, winner, game_log, game_error)
     @success = success
+    @winner = winner
     @game_log = game_log
     @game_error = game_error
   end
 
   def to_s
-    "Success: #{@success}\n\nGame log:\n#{@game_log}\n\nError:\n#{@game_error}"
+    "Success: #{@success}\n\n" \
+    "Winner: #{@winner}\n\n" \
+    "Game log:\n#{@game_log}\n\n" \
+    "Error:\n#{@game_error}"
   end
 end
