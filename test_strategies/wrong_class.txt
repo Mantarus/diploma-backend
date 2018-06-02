@@ -2,6 +2,7 @@ class MyPlayer
   attr_reader :name
   attr_accessor :manual
   def initialize (name, manual = false)
+    puts "Wrong class strategy!"
     @name = name
     @manual = manual
     @lastsample = [1, 0]

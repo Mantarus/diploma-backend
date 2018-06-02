@@ -1,6 +1,11 @@
 # class Game
 class Game
+  @@count = 0
+
   def initialize(player1, player2)
+    @@count += 1
+    @id = @@count
+
     @players = [
       [player1, BattleField.new, 0],
       [player2, BattleField.new, 0]
@@ -12,6 +17,8 @@ class Game
   end
 
   def start
+    puts "Playing game #{@id}"
+
     game_result = GameResult.new(nil, nil)
     last_shots = []
 

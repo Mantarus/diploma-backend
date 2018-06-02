@@ -11,20 +11,16 @@ class GameController
   @@count = 0
 
   def initialize(strategy1, strategy2)
-    srand
     @@count += 1
     @id = @@count
+
+    srand
     @strategy1 = strategy1
     @strategy2 = strategy2
   end
 
-  def print_id
-    puts "Playing controller #{@id}"
-  end
-
   def play_game
-
-    puts @id
+    puts "Playing controller #{@id}"
 
     module1 = add_module_definition(@strategy1, 'ModuleA')
     module2 = add_module_definition(@strategy2, 'ModuleB')

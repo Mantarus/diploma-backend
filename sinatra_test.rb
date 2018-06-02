@@ -9,5 +9,7 @@ end
 post '/play' do
   body = JSON.parse(request.body.read)
   controller = GameController.new(body['strategy1'], body['strategy2'])
-  controller.play_game.to_json
+  result = controller.play_game
+  puts result.game_error
+  result.to_json
 end
