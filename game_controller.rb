@@ -55,8 +55,14 @@ class GameController
       p2 = ModuleB::Player.new('P2')
       g = Game.new(p1, p2)
       result = g.start
+
+      Object.send(:remove_const, :ModuleA)
+      Object.send(:remove_const, :ModuleB)
+
       Response.new(true, result.winner, result.game_log, nil)
     rescue => error
+      Object.send(:remove_const, :ModuleA)
+      Object.send(:remove_const, :ModuleB)
       return Response.new(false, nil, nil, error.message)
     end
 
