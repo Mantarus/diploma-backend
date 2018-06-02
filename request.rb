@@ -12,6 +12,6 @@ class Request
 
   def to_json
     { player1: @player1, strategy1: @strategy1,
-      player2: @player1, strategy2: @strategy1 }.to_json
+      player2: @player2, strategy2: @strategy2 }.to_json
   end
 end

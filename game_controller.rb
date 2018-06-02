@@ -8,13 +8,23 @@ require './response.rb'
 require 'FileUtils'
 
 class GameController
+  @@count = 0
 
   def initialize(strategy1, strategy2)
+    srand
+    @@count += 1
+    @id = @@count
     @strategy1 = strategy1
     @strategy2 = strategy2
   end
 
+  def print_id
+    puts "Playing controller #{@id}"
+  end
+
   def play_game
+
+    puts @id
 
     module1 = add_module_definition(@strategy1, 'ModuleA')
     module2 = add_module_definition(@strategy2, 'ModuleB')
@@ -44,11 +54,9 @@ class GameController
     FileUtils.remove file_a
     FileUtils.remove file_b
 
-    srand
-
     begin
-      p1 = ModuleA::Player.new('Player 1')
-      p2 = ModuleB::Player.new('Player 2')
+      p1 = ModuleA::Player.new('P1')
+      p2 = ModuleB::Player.new('P2')
       g = Game.new(p1, p2)
       result = g.start
       Response.new(true, result.winner, result.game_log, nil)
