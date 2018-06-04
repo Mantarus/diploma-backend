@@ -40,6 +40,14 @@ class GameController
 
   private
 
+  def generate_file_name
+    "strategy_#{srand}.rb"
+  end
+
+  def generate_module_name
+    "Module_#{srand}"
+  end
+
   def generate_player_object(player_name, strategy, module_name, file_name)
     strategy = add_module_definition(strategy, module_name)
     open(file_name, 'w') { |f| f.puts strategy }
@@ -59,14 +67,6 @@ class GameController
 
     FileUtils.remove file1
     FileUtils.remove file2
-  end
-
-  def generate_file_name
-    "strategy_#{srand}.rb"
-  end
-
-  def generate_module_name
-    "Module_#{srand}"
   end
 
   def add_module_definition(class_definition, module_name)
