@@ -8,11 +8,8 @@ require './response.rb'
 require 'FileUtils'
 
 class GameController
-  @@count = 0
 
   def initialize(strategy1, strategy2)
-    @@count += 1
-    @id = @@count
 
     srand
     @strategy1 = strategy1
@@ -20,49 +17,51 @@ class GameController
   end
 
   def play_game
-    puts "Playing controller #{@id}"
 
-    module1 = add_module_definition(@strategy1, 'ModuleA')
-    module2 = add_module_definition(@strategy2, 'ModuleB')
+    module1 = generate_module_name
+    module2 = generate_module_name
 
-    file_a = generate_file_name
-    file_b = generate_file_name
+    @strategy1 = add_module_definition(@strategy1, module1)
+    @strategy2 = add_module_definition(@strategy2, module2)
 
-    open(file_a, 'w') { |f| f.puts module1 }
-    open(file_b, 'w') { |f| f.puts module2 }
+    file1 = generate_file_name
+    file2 = generate_file_name
+
+    open(file1, 'w') { |f| f.puts @strategy1 }
+    open(file2, 'w') { |f| f.puts @strategy2 }
 
     begin
-    load file_a
+    load file1
     rescue SyntaxError => error
-      message = handle_syntax_error(error, file_a)
-      FileUtils.remove file_b
+      message = handle_syntax_error(error, file1)
+      FileUtils.remove file2
       return Response.new(false, nil, nil, message)
     end
 
     begin
-      load file_b
+      load file2
     rescue SyntaxError => error
-      message = handle_syntax_error(error, file_b)
-      FileUtils.remove file_a
+      message = handle_syntax_error(error, file2)
+      FileUtils.remove file1
       return Response.new(false, nil, nil, message)
     end
 
-    FileUtils.remove file_a
-    FileUtils.remove file_b
+    FileUtils.remove file1
+    FileUtils.remove file2
 
     begin
-      p1 = ModuleA::Player.new('P1')
-      p2 = ModuleB::Player.new('P2')
+      p1 = eval "#{module1}::Player.new('P1')"
+      p2 = eval "#{module2}::Player.new('P2')"
       g = Game.new(p1, p2)
       result = g.start
 
-      Object.send(:remove_const, :ModuleA)
-      Object.send(:remove_const, :ModuleB)
+      Object.send(:remove_const, module1)
+      Object.send(:remove_const, module2)
 
       Response.new(true, result.winner, result.game_log, nil)
     rescue => error
-      Object.send(:remove_const, :ModuleA)
-      Object.send(:remove_const, :ModuleB)
+      Object.send(:remove_const, module1)
+      Object.send(:remove_const, module2)
       return Response.new(false, nil, nil, error.message)
     end
 
@@ -72,6 +71,10 @@ class GameController
 
   def generate_file_name
     "strategy_#{srand}.rb"
+  end
+
+  def generate_module_name
+    "Module_#{srand}"
   end
 
   def add_module_definition(class_definition, module_name)
