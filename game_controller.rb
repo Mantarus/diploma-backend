@@ -48,7 +48,8 @@ class GameController
     "Module_#{srand}"
   end
 
-  def generate_player_object(player_name, strategy, module_name, file_name)
+  def generate_player_object(player_name, strategy,
+                             module_name, file_name)
     strategy = add_module_definition(strategy, module_name)
     open(file_name, 'w') { |f| f.puts strategy }
     load file_name
@@ -64,9 +65,14 @@ class GameController
       Object.send(:remove_const, module2)
     rescue NameError
     end
-
-    FileUtils.remove file1
-    FileUtils.remove file2
+    begin
+      FileUtils.remove file1
+    rescue Exception
+    end
+    begin
+      FileUtils.remove file2
+    rescue Exception
+    end
   end
 
   def add_module_definition(class_definition, module_name)

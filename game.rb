@@ -1,11 +1,7 @@
 # class Game
 class Game
-  @@count = 0
 
   def initialize(player1, player2)
-    @@count += 1
-    @id = @@count
-
     @players = [
       [player1, BattleField.new, 0],
       [player2, BattleField.new, 0]
@@ -17,8 +13,6 @@ class Game
   end
 
   def start
-    puts "Playing game #{@id}"
-
     game_result = GameResult.new(nil, nil)
     last_shots = []
 
@@ -57,7 +51,8 @@ class Game
       # print(shot, ' ', res, "\n")
       if move_res
         log("#{p1[0].name}\t#{move}")
-        log("#{p1[0].name}\t#{shot}\t#{res}")
+        # log("#{p1[0].name}\t#{shot}\t#{res}")
+        log(log_shot(p1[0].name, shot, res))
       end
 
       # Check hit. If miss, pass to the opponent, else check game over condition
@@ -98,6 +93,10 @@ class Game
 
   def log(string)
     @log += string + "\n"
+  end
+
+  def log_shot(player, shot, res)
+    "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
   end
 
 end

@@ -6,7 +6,7 @@ get '/status' do
   'alive'
 end
 
-post '/play' do
+post '/play/' do
   body = JSON.parse(request.body.read)
   controller = GameController.new(body['strategy1'], body['strategy2'])
   result = controller.play_game
