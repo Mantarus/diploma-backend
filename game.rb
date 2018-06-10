@@ -15,6 +15,7 @@ class Game
   def start
     game_result = GameResult.new(nil, nil)
     last_shots = []
+    log_p = true
 
     until @game_over
 
@@ -22,37 +23,50 @@ class Game
       p1 = @players[0]
       p2 = @players[1]
 
-      # Increase turn counter
-      p1[2] += 1
-      # print("Step #{p1[2]} of player ", p1[0].name, "\n")
-      log("\n#{p1[0].name}\tstep #{p1[2]}")
+      # Залогировать изначальное расположение кораблей
+      if log_p
+        log_placement(p1).each do |record|
+          log(record)
+        end
+        # p1[1].print_field
 
-      # Cure all current player's ships
-      p1[1].cure
-      p1[1].remains.each do |ship|
-        log("#{p1[0].name}\t#{ship[0]}\t#{ship[3]}")
+        log_placement(p2).each do |record|
+          log(record)
+        end
+        # p2[1].print_field
+
+        log_p = false
       end
 
-      # Player moves or rotates one of his ships and then shoots
+      # Увеличить счетчик ходов
+      p1[2] += 1
+
+      # Лечение кораблей
+      p1[1].cure
+
+      # Залогировать здоровье кораблей
+      log_hp(p1).each do |record|
+        log(record)
+      end
+
+      # Игрок перемещает либо вращает один из своих кораблей
+      # и затем делает выстрел
       move = p1[0].ship_move_strategy(p1[1].remains)
       move_res = p1[1].move(move)
-      # p2[1].print_field
+
       shot = p1[0].shot_strategy
 
-      # Check for illegal shot and, if legal, make a shot
+      # Проверка на illegal shot
       if last_shots.include? shot
-        # puts 'Illegal shot'
         res = 'miss'
       else
         last_shots.push shot
         res = p2[1].shoot shot
       end
 
-      # print(shot, ' ', res, "\n")
       if move_res
-        log("#{p1[0].name}\t#{move}")
-        # log("#{p1[0].name}\t#{shot}\t#{res}")
-        log(log_shot(p1[0].name, shot, res))
+        log(log_move(p1, move))
+        log(log_shot(p1[0].name, shot, res, p2))
       end
 
       # Check hit. If miss, pass to the opponent, else check game over condition
@@ -95,8 +109,55 @@ class Game
     @log += string + "\n"
   end
 
-  def log_shot(player, shot, res)
-    "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
+  def log_shot(player, shot, res, opponent)
+    if res == 'wounded'
+      ship_coords = opponent[1].get_cell(shot[0], shot[1]).coord
+      ship = opponent[1].remains.select do |ship|
+        ship[1] == ship_coords
+      end[0]
+      "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}\t#{ship[0]}\t#{ship[3]}"
+    else
+      "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
+    end
+  end
+
+  # Return p num len hor x y
+  def log_placement(player)
+    arr = []
+
+    player[1].remains.each do |ship|
+      coords = calc_coords(ship[1])
+      arr.append("#{player[0].name}\t#{ship[0]}\t#{ship[2]}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}")
+    end
+
+    arr
+  end
+
+  # Return p num hp
+  def log_hp(player)
+    arr = []
+
+    player[1].remains.each do |ship|
+      arr.append("#{player[0].name}\t#{ship[0]}\t#{ship[3]}")
+    end
+
+    arr
+  end
+
+  def log_move(player, move)
+    ship_idx = move[0]
+    ship = player[1].remains.select do |elem|
+      elem[0] == ship_idx
+    end[0]
+    coords = calc_coords(ship[1])
+    "#{player[0].name}\t#{ship_idx}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}"
+  end
+
+  def calc_coords(coords)
+    x = coords[0]
+    y = coords[1]
+    hor = coords[0] == coords[2]
+    [x, y, hor]
   end
 
 end

@@ -9,6 +9,10 @@ class BattleField < Field
 
   SHIPS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1].freeze
 
+  def get_cell(x, y)
+    @field[x][y]
+  end
+
   # Initializes ships array
   def new_ships
     @all_ships = SHIPS.map { |len| Ship.new(self, len) }
