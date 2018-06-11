@@ -47,9 +47,9 @@ class Game
       p1[1].cure
 
       # Залогировать здоровье кораблей
-      log_hp(p1).each do |record|
-        log(record)
-      end
+      # log_hp(p1).each do |record|
+      #   log(record)
+      # end
 
       # Игрок перемещает либо вращает один из своих кораблей
       # и затем делает выстрел
@@ -121,9 +121,9 @@ class Game
       ship = opponent[1].remains.select do |ship|
         ship[1] == ship_coords
       end[0]
-      "st\t#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}\t#{ship[0]}\t#{ship[3]}"
+      "st\t#{player}\t#{shot[0]}\t#{shot[1]}\t#{res}\t#{ship[0]}\t#{ship[3]}"
     else
-      "st\t#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
+      "st\t#{player}\t#{shot[0]}\t#{shot[1]}\t#{res}"
     end
   end
 
@@ -152,9 +152,10 @@ class Game
 
   def log_move(player, move)
     ship_idx = move[0]
-    ship = player[1].remains.select do |elem|
-      elem[0] == ship_idx
-    end[0]
+    # ship = player[1].remains.select do |elem|
+    #   elem[0] == ship_idx
+    # end[0]
+    ship = player[1].remains[ship_idx]
     coords = calc_coords(ship[1])
     "mv\t#{player[0].name}\t#{ship_idx}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}"
   end
