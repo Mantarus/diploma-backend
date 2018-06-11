@@ -27,13 +27,15 @@ class Game
       if log_p
         log_placement(p1).each do |record|
           log(record)
+          puts record
         end
-        # p1[1].print_field
+        p1[1].print_field
 
         log_placement(p2).each do |record|
           log(record)
+          puts record
         end
-        # p2[1].print_field
+        p2[1].print_field
 
         log_p = false
       end
@@ -66,6 +68,9 @@ class Game
 
       if move_res
         log(log_move(p1, move))
+        # Debug
+        puts log_move(p1, move)
+        p1[1].print_field
         log(log_shot(p1[0].name, shot, res, p2))
       end
 
@@ -78,6 +83,7 @@ class Game
         p1[0].hit res
         @game_over = p2[1].game_over?
         if @game_over
+          log("win\t#{p1[0].name}")
           game_result.winner = p1[0].name
           game_result.game_log = @log
           break
@@ -115,9 +121,9 @@ class Game
       ship = opponent[1].remains.select do |ship|
         ship[1] == ship_coords
       end[0]
-      "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}\t#{ship[0]}\t#{ship[3]}"
+      "st\t#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}\t#{ship[0]}\t#{ship[3]}"
     else
-      "#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
+      "st\t#{player}\ts\t#{shot[0]}\t#{shot[1]}\t#{res}"
     end
   end
 
@@ -127,7 +133,7 @@ class Game
 
     player[1].remains.each do |ship|
       coords = calc_coords(ship[1])
-      arr.append("#{player[0].name}\t#{ship[0]}\t#{ship[2]}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}")
+      arr.append("pl\t#{player[0].name}\t#{ship[0]}\t#{ship[2]}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}")
     end
 
     arr
@@ -138,7 +144,7 @@ class Game
     arr = []
 
     player[1].remains.each do |ship|
-      arr.append("#{player[0].name}\t#{ship[0]}\t#{ship[3]}")
+      arr.append("hp\t#{player[0].name}\t#{ship[0]}\t#{ship[3]}")
     end
 
     arr
@@ -150,7 +156,7 @@ class Game
       elem[0] == ship_idx
     end[0]
     coords = calc_coords(ship[1])
-    "#{player[0].name}\t#{ship_idx}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}"
+    "mv\t#{player[0].name}\t#{ship_idx}\t#{coords[2]}\t#{coords[0]}\t#{coords[1]}"
   end
 
   def calc_coords(coords)
